@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>Rutina Gym — Fuerza & Función</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{background:#0a0a0a;color:#f0f0f0;font-family:'Barlow Condensed','Impact',sans-serif;min-height:100vh;padding-bottom:60px}
+  .header{background:#0d0d0d;border-bottom:1px solid #1a1a1a;padding:28px 20px 20px;max-width:640px;margin:0 auto}
+  .header-label{font-size:11px;letter-spacing:4px;color:#555;margin-bottom:6px;font-family:'Barlow',sans-serif}
+  .header-title{font-size:38px;font-weight:900;letter-spacing:1px;line-height:1;margin-bottom:4px}
+  .header-sub{color:#666;font-size:13px;font-family:'Barlow',sans-serif;font-weight:300}
+  .container{max-width:640px;margin:0 auto;padding:0 16px}
+  .day-tabs{display:flex;gap:10px;margin-top:20px;margin-bottom:24px}
+  .day-btn{flex:1;padding:14px 8px;border-radius:8px;border:2px solid transparent;background:#161616;cursor:pointer;transition:all .2s;text-align:center}
+  .day-btn.active{background:#1a1a1a}
+  .day-btn:active{transform:scale(.97)}
+  .day-icon{font-size:22px;margin-bottom:4px}
+  .day-label{font-size:16px;font-weight:900;letter-spacing:1px;transition:color .3s}
+  .day-focus{font-size:10px;color:#666;font-family:'Barlow',sans-serif;margin-top:2px;line-height:1.3}
+  .stats{display:flex;gap:10px;margin-bottom:20px}
+  .stat-box{background:#111;border:1px solid #222;border-radius:8px;padding:14px;text-align:center;flex:1}
+  .stat-val{font-size:22px;font-weight:900}
+  .stat-lbl{font-size:10px;color:#555;font-family:'Barlow',sans-serif;letter-spacing:1px;margin-top:2px}
+  .warmup{border-radius:8px;padding:12px 16px;display:flex;align-items:center;gap:10px;font-family:'Barlow',sans-serif;font-size:13px;margin-bottom:20px}
+  .warmup-lbl{font-size:10px;letter-spacing:2px;margin-bottom:2px}
+  .ex-card{background:#111;border:1px solid #222;border-radius:8px;margin-bottom:10px;overflow:hidden;transition:border-color .2s}
+  .ex-row{padding:14px 16px;display:flex;align-items:flex-start;justify-content:space-between;gap:12;cursor:pointer}
+  .ex-badges{display:flex;align-items:center;gap:6px;margin-bottom:6px;flex-wrap:wrap}
+  .badge-superset{background:#ff6d0022;color:#FF6D00;border:1px solid #FF6D0044;padding:2px 8px;border-radius:3px;font-size:10px;font-family:'Barlow',sans-serif;font-weight:600;letter-spacing:1px}
+  .badge-warning{background:#ff000018;color:#ff4444;border:1px solid #ff444433;padding:2px 8px;border-radius:3px;font-size:10px;font-family:'Barlow',sans-serif;font-weight:600;letter-spacing:1px}
+  .badge-tag{display:inline-block;padding:2px 8px;border-radius:3px;font-size:10px;font-family:'Barlow',sans-serif;font-weight:500;letter-spacing:.5px;text-transform:uppercase}
+  .badge-machine{color:#888;font-size:10px;font-family:'Barlow',sans-serif}
+  .ex-name{font-size:15px;font-weight:700;letter-spacing:.4px;line-height:1.3}
+  .ex-right{text-align:right;flex-shrink:0}
+  .ex-sets{font-size:18px;font-weight:900}
+  .ex-rest{font-size:10px;color:#555;font-family:'Barlow',sans-serif}
+  .ex-detail{padding:0 16px 14px;padding-top:12px;display:none}
+  .ex-detail.open{display:block}
+  .ex-note{font-family:'Barlow',sans-serif;font-size:13px;color:#aaa;line-height:1.6;margin-bottom:12px}
+  .guide-btn{cursor:pointer;border:none;padding:6px 12px;border-radius:4px;font-family:'Barlow',sans-serif;font-size:11px;font-weight:600;letter-spacing:1px;transition:all .15s}
+  .guide-panel{display:none;background:#0d0d0d}
+  .guide-panel.open{display:block}
+  .guide-svg-wrap{padding:16px 20px 0}
+  .guide-svg-lbl{font-size:10px;letter-spacing:3px;margin-bottom:8px;font-family:'Barlow',sans-serif}
+  .guide-kp{padding:12px 20px 18px}
+  .guide-kp-lbl{font-size:10px;letter-spacing:3px;margin-bottom:10px;font-family:'Barlow',sans-serif}
+  .kp-row{display:flex;gap:10px;margin-bottom:8px;align-items:flex-start}
+  .kp-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:5px}
+  .kp-text{font-family:'Barlow',sans-serif;font-size:12px;line-height:1.5}
+  .tips-section{margin-top:32px}
+  .tips-header{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+  .tips-accent{height:4px;width:40px;border-radius:2px}
+  .tips-lbl{font-size:13px;letter-spacing:3px;color:#555;font-family:'Barlow',sans-serif}
+  .tip-card{background:#111;border:1px solid #1e1e1e;border-radius:8px;padding:12px 14px;display:flex;align-items:center;gap:12px;font-family:'Barlow',sans-serif;font-size:13px;color:#aaa;margin-bottom:8px}
+  .footer{margin-top:32px;padding:16px;border-top:1px solid #1a1a1a;text-align:center;font-family:'Barlow',sans-serif;font-size:11px;color:#444;letter-spacing:2px}
+  .day-content{display:none}.day-content.active{display:block}
+  .fade-in{animation:fadeUp .3s ease forwards}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+  /* SVG animations */
+  @keyframes jalon-arms{0%,100%{transform:translateY(0)}50%{transform:translateY(18px)}}
+  @keyframes jalon-bar{0%,100%{transform:translateY(0)}50%{transform:translateY(16px)}}
+  @keyframes rp-pull{0%,100%{transform:translateX(0)}50%{transform:translateX(-14px)}}
+  @keyframes rm-pull{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}
+  @keyframes pa-press{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}
+  @keyframes pa-rot{0%{transform:rotate(-40deg)}50%{transform:rotate(0deg)}100%{transform:rotate(-40deg)}}
+  @keyframes fp-pull{0%,100%{transform:translateX(0)}50%{transform:translateX(-16px)}}
+  @keyframes plank-tap{0%,40%,100%{transform:translateX(0) translateY(0)}20%{transform:translateX(-12px) translateY(-6px)}}
+  @keyframes sq-down{0%,100%{transform:translateY(0)}50%{transform:translateY(18px)}}
+  @keyframes pr-push{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
+  @keyframes bul-dip{0%,100%{transform:translateY(0)}50%{transform:translateY(16px)}}
+  @keyframes ht-up{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+  @keyframes cf-curl{0%,100%{transform:rotate(0deg)}50%{transform:rotate(-55deg)}}
+  @keyframes ec-ext{0%,100%{transform:rotate(0deg)}50%{transform:rotate(50deg)}}
+  @keyframes tal-rise{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+  @keyframes pm-press{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
+  @keyframes pmi-press{0%,100%{transform:translateX(0)}50%{transform:translateX(14px)}}
+  @keyframes cx-arm-l{0%,100%{transform:rotate(0deg)}50%{transform:rotate(28deg)}}
+  @keyframes cx-arm-r{0%,100%{transform:rotate(0deg)}50%{transform:rotate(-28deg)}}
+  @keyframes rdl-hinge{0%,100%{transform:rotate(0deg)}50%{transform:rotate(32deg)}}
+  @keyframes bd-arm{0%,100%{transform:translateX(0) translateY(0)}50%{transform:translateX(-12px) translateY(-6px)}}
+  @keyframes bd-leg{0%,100%{transform:translateX(0) translateY(0)}50%{transform:translateX(12px) translateY(-6px)}}
+  @keyframes sup-lift{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+  @keyframes pf-breathe{0%,100%{opacity:1}50%{opacity:.4}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-label">RUTINA DE GIMNASIO · 3 DÍAS</div>
+  <h1 class="header-title">FUERZA &<br/><span id="title-color">FUNCIÓN</span></h1>
+  <p class="header-sub">Intermedio · 60 min/sesión · Hernia considerada</p>
+</div>
+
+<div class="container">
+
+  <!-- Day Tabs -->
+  <div class="day-tabs">
+    <button class="day-btn active" id="tab-0" onclick="switchDay(0)">
+      <div class="day-icon">🏔️</div>
+      <div class="day-label" id="lbl-0">DÍA A</div>
+      <div class="day-focus">Espalda + Hombros</div>
+    </button>
+    <button class="day-btn" id="tab-1" onclick="switchDay(1)">
+      <div class="day-icon">⚡</div>
+      <div class="day-label" id="lbl-1">DÍA B</div>
+      <div class="day-focus">Piernas</div>
+    </button>
+    <button class="day-btn" id="tab-2" onclick="switchDay(2)">
+      <div class="day-icon">🔥</div>
+      <div class="day-label" id="lbl-2">DÍA C</div>
+      <div class="day-focus">Pecho + Espalda baja</div>
+    </button>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats" id="stats"></div>
+
+  <!-- Warmup -->
+  <div class="warmup" id="warmup-bar">
+    <span style="font-size:18px">🔥</span>
+    <div>
+      <div class="warmup-lbl" id="warmup-lbl">CALENTAMIENTO</div>
+      <div id="warmup-text" style="font-family:'Barlow',sans-serif;font-size:13px"></div>
+    </div>
+  </div>
+
+  <!-- Day Contents -->
+  <div id="day-0" class="day-content active"></div>
+  <div id="day-1" class="day-content"></div>
+  <div id="day-2" class="day-content"></div>
+
+  <!-- Tips -->
+  <div class="tips-section">
+    <div class="tips-header">
+      <div class="tips-accent" id="tips-accent"></div>
+      <div class="tips-lbl">CONSIDERACIONES PARA TU HERNIA</div>
+    </div>
+    <div id="tips-list"></div>
+  </div>
+
+  <div class="footer">CONSULTÁ CON UN KINESIÓLOGO ANTES DE COMENZAR · HERNIA LUMBAR</div>
+</div>
+
+<script>
+const DAYS = [
+  {
+    color:"#00E5FF", warmup:"5 min bicicleta estática o remo ergométrico a ritmo moderado",
+    exercises:[
+      {name:"Jalón al pecho en polea alta",sets:"4 x 10",rest:"45 seg",tag:"Espalda alta",machine:true,note:"Agarre neutro o supino, pecho arriba, escápulas activas. Jalar hacia la clavícula, no al cuello.",svg:"jalon",
+       kp:["Sentate con muslos bajo el pad, pecho hacia arriba","Jalar la barra hacia la clavícula, no al cuello","Escápulas activas: bajarlas antes de tirar","Subir la barra de forma controlada (2 seg)"]},
+      {name:"Remo en polea baja (cable)",sets:"4 x 10",rest:"45 seg",tag:"Espalda media",machine:true,note:"Columna neutra en todo momento. Codos hacia atrás, no elevar hombros al tirar.",svg:"remo_polea",
+       kp:["Sentate erguido, pies apoyados en la plataforma","Tirar hacia el abdomen con codos pegados al cuerpo","No redondear la espalda en ningún momento","Volver al inicio lentamente con escápulas abiertas"]},
+      {name:"Remo con mancuerna (un brazo)",sets:"3 x 10 c/lado",rest:"45 seg",tag:"Espalda media",machine:false,note:"Apoyate en el banco, sin rotar el torso. Codo sube al techo en el punto más alto.",svg:"remo_mancuerna",
+       kp:["Apoyá una mano y rodilla en el banco","Columna paralela al suelo, core activo","Tirar el codo hacia el techo, no hacia atrás","El torso no debe rotar en ningún momento"]},
+      {name:"SUPERSET: Press Arnold + Elevación lateral",sets:"3 x 10 + 12",rest:"60 seg",tag:"Hombros",machine:false,superset:true,note:"Press Arnold: rotar las palmas mientras empujás. Elevación lateral: codos ligeramente doblados, no balancear.",svg:"press_arnold",
+       kp:["Empezar con palmas hacia vos a altura de hombros","Rotar las palmas hacia adelante mientras empujás","Bajar en el mismo arco de rotación inverso","No bloquear los codos arriba"]},
+      {name:"Face pull en polea (cuerda)",sets:"4 x 15",rest:"45 seg",tag:"Hombros / Lumbar",machine:true,note:"Polea a altura de cara. Separar la cuerda hacia la frente con codos arriba. Protege el manguito rotador.",svg:"face_pull",
+       kp:["Polea a la altura de los ojos","Tomar la cuerda con agarre en pronación","Codos arriba y afuera durante todo el movimiento","Separar la cuerda hacia la frente, no hacia el cuello"]},
+      {name:"Plancha con toque de hombros",sets:"3 x 30 seg",rest:"40 seg",tag:"Core",machine:false,note:"Core antirotatorio. Caderas absolutamente quietas al tocar el hombro contrario.",svg:"plancha",
+       kp:["Codos bajo los hombros, cuerpo en línea recta","Apretar glúteos y core durante todo el tiempo","Al tocar el hombro: apoyo en tres puntos, sin oscilar","Respirar normalmente, no retener el aire"]},
+    ]
+  },
+  {
+    color:"#76FF03", warmup:"5 min en caminadora a ritmo rápido o bicicleta estática",
+    exercises:[
+      {name:"Sentadilla libre con barra",sets:"4 x 8",rest:"60 seg",tag:"Cuádriceps / Glúteo",machine:false,warning:true,note:"⚠️ Hernia presente: peso moderado, técnica impecable. Espalda neutra, core apretado, rodillas hacia afuera. Bajá solo hasta paralelo si sentís tensión lumbar.",svg:"squat",
+       kp:["Barra sobre los trapecios, pies a ancho de hombros","Puntas ligeramente afuera, rodillas hacia afuera","Iniciar empujando caderas hacia atrás y abajo","Espalda neutra en todo momento — prioridad absoluta"]},
+      {name:"Prensa de piernas (pies altos)",sets:"4 x 12",rest:"50 seg",tag:"Cuádriceps / Glúteo",machine:true,note:"Pies en la parte alta del plato para mayor activación de glúteo e isquiotibiales.",svg:"prensa",
+       kp:["Pies en la parte alta de la plataforma, a ancho de cadera","Bajar hasta 90° en las rodillas sin despegar la espalda","Empujar con los talones, no con la punta del pie","No bloquear las rodillas al extender"]},
+      {name:"SUPERSET: Sentadilla búlgara + Hip thrust",sets:"3 x 10 + 12",rest:"60 seg",tag:"Glúteo / Isquio",machine:false,superset:true,note:"Búlgara: pie trasero en banco, torso recto, bajar en línea recta. Hip thrust: empujar la cadera al techo, apretar glúteo arriba.",svg:"bulgara",
+       kp:["Pie trasero en el banco, pie delantero adelantado","Torso recto o levemente inclinado adelante","Bajar hasta que la rodilla trasera casi toque el suelo","Mancuerna en cada mano a los costados"]},
+      {name:"Curl femoral en máquina tumbado",sets:"3 x 12",rest:"45 seg",tag:"Isquiotibiales",machine:true,note:"Movimiento controlado. No levantar las caderas de la almohadilla. Bajá lento (3 seg).",svg:"curl_femoral",
+       kp:["Tumbado boca abajo, talones bajo el rodillo","Apretar el glúteo para estabilizar la pelvis","Doblar las rodillas lentamente hasta 90°","Bajar en 3 segundos — la fase excéntrica es clave"]},
+      {name:"Extensión de cuádriceps en máquina",sets:"3 x 12",rest:"45 seg",tag:"Cuádriceps",machine:true,note:"Rango completo, baja lento 3 segundos en la fase excéntrica. Mantén 1 seg arriba.",svg:"ext_cuad",
+       kp:["Sentado con la espalda apoyada, rodillas a 90°","Extender completamente, sostener 1 seg arriba","Bajar lento (3 segundos) — no soltar el peso","Rango completo para desarrollo máximo"]},
+      {name:"SUPERSET: Elevación de talones + Abducción de cadera",sets:"3 x 15 + 15",rest:"45 seg",tag:"Gemelos / Glúteo medio",machine:true,superset:true,note:"Gemelos: máximo rango, pausa en la cima. Abducción: abrir lento sin balancear la cadera.",svg:"talones",
+       kp:["Elevación: subir en punta de pies al máximo","Pausa de 1 seg en la cima, bajar controlado","Abducción: abrir lento contra la resistencia","Pausa en el punto más abierto antes de volver"]},
+    ]
+  },
+  {
+    color:"#FF6D00", warmup:"5 min en bicicleta estática o caminadora a ritmo moderado",
+    exercises:[
+      {name:"Press con mancuernas en banco plano",sets:"4 x 10",rest:"50 seg",tag:"Pecho",machine:false,note:"Más control que barra. Espalda apoyada, sin arquear la lumbar. Bajar hasta que codos queden a nivel del banco.",svg:"press_mancuernas",
+       kp:["Banco plano, pies apoyados en el suelo","Mancuernas al lado del pecho, codos a 45°","Empujar hasta cuasi extensión sin bloquear","Bajar hasta que codos queden a la altura del banco"]},
+      {name:"Press en máquina inclinado",sets:"3 x 10",rest:"45 seg",tag:"Pecho alto",machine:true,note:"Énfasis en pecho superior y deltoides anterior. Regular el asiento para que los mangos queden a altura del pecho alto.",svg:"press_maquina",
+       kp:["Regular asiento para que mangos estén al pecho alto","Espalda apoyada, no arquear la lumbar","Empujar hasta casi extender sin soltar la tensión","Volver al inicio controlado sintiendo el estiramiento"]},
+      {name:"SUPERSET: Crossover en polea + Peso muerto rumano",sets:"3 x 12 + 10",rest:"60 seg",tag:"Pecho / Espalda baja",machine:true,superset:true,note:"Crossover: brazos en arco, cierre al centro. RDL: bisagra de cadera con espalda plana, sentís estiramiento en isquios.",svg:"crossover",
+       kp:["Crossover: poleas arriba, ligera inclinación hacia adelante","Brazos en arco hacia el centro con leve flexión de codo","RDL: bisagra de cadera, empujar caderas hacia atrás","La espalda permanece plana — sentís estiramiento en isquios"]},
+      {name:"Bird dog en colchoneta",sets:"3 x 10 c/lado",rest:"45 seg",tag:"Core / Lumbar",machine:false,note:"Brazo y pierna opuestos simultáneamente. Columna neutra, no rotar la cadera. Activa multífidos y estabiliza la hernia.",svg:"bird_dog",
+       kp:["En cuatro apoyos, muñecas bajo hombros, rodillas bajo caderas","Extender brazo y pierna opuestos simultáneamente","La cadera NO debe rotar ni elevarse","Sostener 2 seg, volver controlado y cambiar lado"]},
+      {name:"Superman isométrico en colchoneta",sets:"3 x 12 (2 seg hold)",rest:"40 seg",tag:"Espalda baja",machine:false,note:"Boca abajo, elevar brazos y piernas. Sostener 2 segundos cada rep. Activa erectores espinales sin carga axial.",svg:"superman",
+       kp:["Boca abajo, brazos extendidos al frente","Elevar brazos, pecho y piernas del suelo simultáneamente","Contraer los erectores espinales y glúteos","Sostener 2 seg, bajar lento — no rebotar"]},
+      {name:"Plancha frontal",sets:"3 x 40 seg",rest:"40 seg",tag:"Core / Lumbar",machine:false,note:"Glúteos apretados, core profundo activo, sin hundir ni elevar la cadera. Cierre del día para estabilizar la lumbar.",svg:"plancha_frontal",
+       kp:["Codos bajo los hombros, punta de los pies en el suelo","Glúteos apretados, core activo, cuerpo en línea recta","No hundir ni levantar la cadera","Respirar de forma continua durante todo el tiempo"]},
+    ]
+  }
+];
+
+const TIPS = [
+  {icon:"⚠️",text:"Sentadilla libre incluida: técnica impecable, peso moderado, nunca redondear la lumbar"},
+  {icon:"💪",text:"Glúteos y core fuertes = lumbar protegida"},
+  {icon:"⏱️",text:"Descanso máximo entre series: 45–60 segundos"},
+  {icon:"📈",text:"Subí carga cuando puedas completar todas las reps con buena técnica"},
+  {icon:"🔁",text:"Rotá los días en cualquier orden, con al menos 1 día de descanso entre sesiones"},
+  {icon:"🛑",text:"Si sentís dolor lumbar (no fatiga): bajá carga, no empujés"},
+];
+
+const SVG_DATA = {
+  jalon:`<svg viewBox="0 0 200 160" width="100%" height="140"><rect x="85" y="8" width="6" height="60" fill="#444" rx="2"/><rect x="60" y="8" width="66" height="6" fill="#444" rx="2"/><circle cx="116" cy="11" r="5" fill="COL" opacity=".7"/><line x1="116" y1="16" x2="100" y2="55" stroke="COL" stroke-width="1.5" opacity=".5" style="animation:jalon-bar 2s ease-in-out infinite"/><g style="animation:jalon-bar 2s ease-in-out infinite"><rect x="68" y="55" width="64" height="5" fill="#444" rx="2"/></g><rect x="78" y="105" width="44" height="8" fill="#444" rx="2"/><rect x="93" y="75" width="14" height="34" fill="#D4956A" rx="4"/><circle cx="100" cy="68" r="10" fill="#D4956A"/><g style="animation:jalon-arms 2s ease-in-out infinite;transform-origin:100px 80px"><line x1="93" y1="80" x2="72" y2="57" stroke="#D4956A" stroke-width="5" stroke-linecap="round"/><line x1="107" y1="80" x2="128" y2="57" stroke="#D4956A" stroke-width="5" stroke-linecap="round"/></g><g style="animation:jalon-bar 2s ease-in-out infinite;transform-origin:100px 55px"><polygon points="96,48 104,48 100,56" fill="COL" opacity=".9"/></g><text x="100" y="155" text-anchor="middle" fill="#666" font-size="9" font-family="sans-serif">JALAR HACIA EL PECHO · ESCÁPULAS ACTIVAS</text></svg>`,
+  remo_polea:`<svg viewBox="0 0 200 160" width="100%" height="140"><rect x="16" y="50" width="10" height="80" fill="#444" rx="2"/><circle cx="21" cy="75" r="6" fill="COL" opacity=".6"/><line x1="27" y1="75" x2="95" y2="100" stroke="COL" stroke-width="1.5" opacity=".5" style="animation:rp-pull 2s ease-in-out infinite"/><rect x="90" y="120" width="80" height="8" fill="#444" rx="2"/><rect x="103" y="85" width="13" height="36" fill="#D4956A" rx="4"/><circle cx="109" cy="78" r="9" fill="#D4956A"/><g style="animation:rp-pull 2s ease-in-out infinite;transform-origin:103px 95px"><line x1="103" y1="95" x2="78" y2="88" stroke="#D4956A" stroke-width="5" stroke-linecap="round"/><polygon points="95,96 95,104 88,100" fill="COL" opacity=".9"/></g><text x="100" y="155" text-anchor="middle" fill="#666" font-size="9" font-family="sans-serif">ESPALDA NEUTRA · CODOS HACIA ATRÁS</text></svg>`,
+  remo_mancuerna:`<svg viewBox="0 0 200 160" width="100%" height="140"><rect x="30" y="100" width="90" height="10" fill="#444" rx="3"/><rect x="30" y="110" width="10" height="25" fill="#444" rx="2"/><rect x="110" y="110" width="10" height="25" fill="#444" rx="2"/><rect x="38" y="88" width="75" height="14" fill="#D4956A" rx="5"/><circle cx="118" cy="91" r="9" fill="#D4956A"/><line x1="38" y1="95" x2="32" y2="110" stroke="#D4956A" stroke-width="5" stroke-linecap="round"/><g style="animation:rm-pull 2s ease-in-out infinite;transform-origin:55px 95px"><line x1="55" y1="95" x2="55" y2="118" stroke="#D4956A" stroke-width="5" stroke-linecap="round"/><rect x="46" y="118" width="18" height="5" fill="#444" rx="2"/><rect x="44" y="115" width="6" height="11" fill="#444" rx="1"/><rect x="58" y="115" width="6" height="11" fill="#444" rx="1"/><polygon points="51,108 59,108 55,100" fill="COL" opacity=".9"/></g><text x="100" y="155" text-anchor="middle" fill="#666" font-size="9" font-family="sans-serif">CODO AL TECHO · TORSO QUIETO</text></svg>`,
+  press_arnold:`<svg viewBox="0 0 200 160" width="100%" height="140"><rect x="80" y="118" width="40" height="8" fill="#444" rx="2"/><rect x="88" y="90" width="24" height="32" fill="#D4956A" rx="5"/><circle cx="100" cy="82" r="11" fill="#D4956A"/><g style="animation:pa-press 2s ease-in-out infinite;transform-origin:100px 90px"><line x1="88" y1="100" x2="68" y2="92" stroke="#D4956A" stroke-width="6" stroke-linecap="round"/><line x1="112" y1="100" x2="132" y2="92" stroke="#D4956A" stroke-width="6" stroke-linecap="round"/><rect x="56" y="88" width="14" height="5" fill="#444" rx="2"/><rect x="130" y="88" width="14" height="5" fill="#444" rx="2"/><polygon points="96,72 104,72 100,64" fill="COL" opacity=".9"/></g><g style="animation:pa-rot 2s ease-in-out infinite;transform-origin:100px 100px"><path d="M78,96 Q70,80 85,74" stroke="COL" stroke-width="1.5" fill="none" stroke-dasharray="3,2"/><polygon points="84,71 89,77 82,78" fill="COL"/></g><text x="100" y="155" text-anchor="middle" fill="#666" font-size="9" font-family="sans-serif">ROTAR PALMAS + EMPUJAR ARRIBA</text></svg>`,
+  face_pull:`<svg viewBox="0 0 200 160" width="100%" height="140"><rect x="155" y="30" width="10" height="100" fill="#444" rx="2"/><circle cx="160" cy="70" r="6" fill="COL" opacity=".6"/><line x1="154" y1="70" x2="110" y2="75" stroke="COL" stroke-width="1.5" opacity=".5" style="animation:fp-pull 2s ease-in-out infinite"/><rect x="88" y="110" width="24" height="30" fill="#D4956A" rx="4"/><rect x="88" y="80" width="24" height="34" fill="#D4956A" rx="5"/><circle cx="100" cy="72" r="11" fill="#D4956A"/><g style="animation:fp-pull 2s ease-in-out infinite;transform-origin:100px 88px"><line x1="88" y1="88" x2="68" y2="76" stroke="#D4956A" stroke-width="5" stroke-linecap="round"/><line x1="112" y1="88" x2="132" y2="76" stroke="#D4956A" stroke-width="5" stroke-linecap="round"/><polygon points="96,68 104,68 100,60" fill="COL" opacity=".9"/></g><text x="100" y="155" text-anchor="middle" fill="#666" font-size="9" font-family="sans-serif">CODOS ARRIBA · JALAR A LA CARA</text></svg>`,
+  plancha:`<svg viewBox="0 0 200 160" width="100%" height="140"><rect x="20" y="120" width="160" height="4" fill="#444" rx="1"/><rect x="50" y="106" width="100" height="14" fill="#D4956A" rx="5"/><circle cx="155" cy="106" r="10" fill="#D4956A"/><rect x="50" y="116" width="14" height="5" fill="#D4956A" rx="2"/><rect x="76" y="116" width="14" height="5" fill="#D4956A" rx="2"/><rect x="34" y="112" width="18" height="8" fill="#D4956A" rx="3"/><g style="animation:plank-tap 3s ease-in-out infinite;transform-origin:115px 110px"><line x1="115" y1="108" x2="100" y2="96" stroke="#D4956A" stroke-width="5" stroke-linecap="round"/><circle cx="100" cy="93" r="4" fill="COL" opacity=".8"/></g><polygon points="96,96 104,96 100,88" fill="COL" opacity=".9" style="animation:plank-tap 3s ease-in-out infinite"/><text x="100" y="155" text-anchor="middle" fill="#666" font-size="9" font-family="sans-serif">CADERAS QUIETAS · TOQUE ALTERNO</text></svg>`,
+  squat:`<svg viewBox="0 0 200 160" width="100%" height="140"><rect x="40" y="50" width="6" height="70" fill="#444" rx="2"/><rect x="154" y="50" width="6" height="70" fill="#444" rx="2"/><rect x="30" y="62" width="140" height="6" fill="#444" rx="3"/><rect x="30" y="60" width="14" height="10" fill="#666" rx="2"/><rect x="156" y="60" width="14" height="10" fill="#666" rx="2"/><g style="animation:sq-down 2s ease-in-out infinite;transform-origin:100px 80px"><rect x="88" y="120" width="12" height="30" fill="#D4956A" rx="3"/><rect x="100" y="120" width="12" height="30" fill="#D4956A" rx="3"/><rect x="86" y="86" width="28" height="36" fill="#D4956A" rx="5"/><circle cx="100" cy="78" r="11" fill="#D4956A"/><line x1="86" y1="92" x2="66" y2="65" stroke="#D4956A" stroke-width="5" stroke-linecap="round"/><line x1="114" y1="92" x2="134" y2="65" stroke="#D4956A" stroke-width="5" stroke-linecap="round"/><polygon points="96,118 104,118 100,128" fill="COL" opacity=".9"/></g><text x="100" y="155" text-anchor="middle" fill="#ff4444" font-size="9" font-family="sans-serif">⚠ ESPALDA NEUTRA · CORE ACTIVO</text></svg>`,
+  prensa:`<svg viewBox="0 0 200 160" width="100%" height="140"><rect x="20" y="80" width="80" height="50" fill="#444" rx="4"/><rect x="95" y="40" width="8" height="90" fill="#555" rx="2"/><rect x="88" y="44" width="22" height="40" fill="#333" rx="3"/><rect x="30" y="85" width="60" height="18" fill="#D4956A" rx="5"/><circle cx="88" cy="90" r="9" fill="#D4956A"/><g style="animation:pr-push 2s ease-in-out infinite;transform-origin:80px 95px"><line x1="75" y1="96" x2="90" y2="68" stroke="#D4956A" stroke-width="7" stroke-linecap="round"/><line x1="65" y1="96" x2="82" y2="68" stroke="#D4956A" stroke-width="7" stroke-linecap="round"/><polygon points="78,55 86,55 82,47" fill="COL" opacity=".9"/></g><text x="100" y="155" text-anchor="middle" fill="#666" font-size="9" font-family="sans-serif">PIES ALTOS EN LA PLATAFORMA</text></svg>`,
+  bulgara:`<svg viewBox="0 0 200 160" width="100%" height="140"><rect x="118" y="105" width="52" height="8" fill="#444" rx="3"/><rect x="118" y="113" width="8" height="20" fill="#444" rx="2"/><rect x="162" y="113" width="8" height="20" fill="#444" rx="2"/><g style="animation:bul-dip 2s ease-in-out infinite;transform-origin:100px 90px"><ellipse cx="138" cy="106" rx="10" ry="5" fill="#D4956A"/><line x1="110" y1="108" x2="138" y2="106" stroke="#D4956A" stroke-width="7" stroke-linecap="round"/><line x1="100" y1="108" x2="82" y2="130" stroke="#D4956A" stroke-width="7" stroke-linecap="round"/><rect x="92" y="76" width="20" height="34" fill="#D4956A" rx="5"/><circle cx="102" cy="68" r="10" fill="#D4956A"/><rect x="86" y="104" width="18" height="5" fill="#444" rx="2"/><polygon points="96,120 104,120 100,130" fill="COL" opacity=".9"/></g><text x="100" y="155" text-anchor="middle" fill="#666" font-size="9" font-family="sans-serif">PIE TRASERO EN BANCO · BAJAR RECTO</text></svg>`,
+  hip_thrust:`<svg viewBox="0 0 200 160" width="100%" height="140"><rect x="50" y="95" width="100" height="10" fill="#444" rx="3"/><rect x="50" y="105" width="10" height="25" fill="#444" rx="2"/><rect x="140" y="105" width="10" height="25" fill="#444" rx="2"/><g style="animation:ht-up 2s ease-in-out infinite;transform-origin:100px 110px"><rect x="68" y="88" width="50" height="10" fill="#D4956A" rx="4"/><ellipse cx="93" cy="110" rx="20" ry="12" fill="#D4956A"/><line x1="80" y1="118" x2="68" y2="140" stroke="#D4956A" stroke-width="8" stroke-linecap="round"/><line x1="106" y1="118" x2="118" y2="140" stroke="#D4956A" stroke-width="8" stroke-linecap="round"/><rect x="40" y="106" width="120" height="5" fill="#444" rx="2"/><rect x="36" y="104" width="10" height="9" fill="#555" rx="2"/><rect x="154" y="104" width="10" height="9" fill="#555" rx="2"/><polygon points="88,96 96,96 92,88" fill="COL" opacity=".9"/></g><text x="100" y="155" text-anchor="middle" fill="#666" font-size="9" font-family="sans-serif">EMPUJAR CADERAS AL TECHO · GLÚTEO</text></svg>`,
+  curl_femoral:`<svg viewBox="0 0 200 160" width="100%" height="140"><rect x="60" y="70" width="80" height="12" fill="#444" rx="3"/><rect x="60" y="82" width="80" height="50" fill="#222" rx="3"/><rect x="65" y="63" width="70" height="11" fill="#D4956A" rx="4"/><circle cx="138" cy="67" r="8" fill="#D4956A"/><g style="animation:cf-curl 2s ease-in-out infinite;transform-origin:100px 100px"><line x1="68" y1="76" x2="68" y2="110" stroke="#D4956A" stroke-width="8" stroke-linecap="round"/><line x1="82" y1="76" x2="82" y2="110" stroke="#D4956A" stroke-width="8" stroke-linecap="round"/><ellipse cx="75" cy="112" rx="14" ry="6" fill="#444"/></g><path d="M68,110 Q50,90 68,76" stroke="COL" stroke-width="1.5" fill="none" stroke-dasharray="3,2"/><polygon points="66,74 72,80 60,79" fill="COL"/><text x="100" y="155" text-anchor="middle" fill="#666" font-size="9" font-family="sans-serif">CURL CONTROLADO · NO LEVANTAR CADERAS</text></svg>`,
+  ext_cuad:`<svg viewBox="0 0 200 160" width="100%" height="140"><rect x="60" y="75" width="80" height="12" fill="#444" rx="3"/><rect x="60" y="87" width="80" height="50" fill="#222" rx="3"/><rect x="65" y="63" width="70" height="14" fill="#D4956A" rx="4"/><circle cx="68" cy="68" r="8" fill="#D4956A"/><g style="animation:ec-ext 2s ease-in-out infinite;transform-origin:100px 100px"><line x1="95" y1="89" x2="95" y2="120" stroke="#D4956A" stroke-width="8" stroke-linecap="round"/><line x1="108" y1="89" x2="108" y2="120" stroke="#D4956A" stroke-width="8" stroke-linecap="round"/><ellipse cx="101" cy="122" rx="14" ry="6" fill="#444"/></g><path d="M95,120 Q118,130 120,105" stroke="COL" stroke-width="1.5" fill="none" stroke-dasharray="3,2"/><polygon points="119,103 124,109 116,111" fill="COL"/><text x="100" y="155" text-anchor="middle" fill="#666" font-size="9" font-family="sans-serif">EXTENSIÓN COMPLETA · BAJAR LENTO</text></svg>`,
+  talones:`<svg viewBox="0 0 200 160" width="100%" height="140"><rect x="60" y="125" width="80" height="8" fill="#444" rx="2"/><rect x="88" y="88" width="24" height="38" fill="#D4956A" rx="4"/><circle cx="100" cy="80" r="10" fill="#D4956A"/><rect x="78" y="88" width="44" height="6" fill="#444" rx="3"/><g style="animation:tal-rise 2s ease-in-out infinite;transform-origin:100px 130px"><line x1="95" y1="124" x2="88" y2="148" stroke="#D4956A" stroke-width="7" stroke-linecap="round"/><line x1="105" y1="124" x2="112" y2="148" stroke="#D4956A" stroke-width="7" stroke-linecap="round"/><ellipse cx="88" cy="148" rx="7" ry="4" fill="#D4956A"/><ellipse cx="112" cy="148" rx="7" ry="4" fill="#D4956A"/><polygon points="96,116 104,116 100,108" fill="COL" opacity=".9"/></g><text x="100" y="155" text-anchor="middle" fill="#666" font-size="9" font-family="sans-serif">SUBIR EN PUNTA DE PIES · MÁXIMO RANGO</text></svg>`,
+  press_mancuernas:`<svg viewBox="0 0 200 160" width="100%" height="140"><rect x="50" y="100" width="100" height="10" fill="#444" rx="3"/><rect x="50" y="110" width="10" height="28" fill="#444" rx="2"/><rect x="140" y="110" width="10" height="28" fill="#444" rx="2"/><rect x="58" y="88" width="84" height="14" fill="#D4956A" rx="5"/><circle cx="148" cy="94" r="9" fill="#D4956A"/><g style="animation:pm-press 2s ease-in-out infinite"><line x1="66" y1="94" x2="50" y2="106" stroke="#D4956A" stroke-width="5" stroke-linecap="round"/><line x1="116" y1="94" x2="132" y2="106" stroke="#D4956A" stroke-width="5" stroke-linecap="round"/><rect x="36" y="102" width="16" height="5" fill="#444" rx="2"/><rect x="130" y="102" width="16" height="5" fill="#444" rx="2"/><rect x="34" y="100" width="6" height="9" fill="#555" rx="1"/><rect x="46" y="100" width="6" height="9" fill="#555" rx="1"/><rect x="128" y="100" width="6" height="9" fill="#555" rx="1"/><rect x="140" y="100" width="6" height="9" fill="#555" rx="1"/><polygon points="86,84 90,92 82,92" fill="COL" opacity=".9"/></g><text x="100" y="155" text-anchor="middle" fill="#666" font-size="9" font-family="sans-serif">EMPUJAR ARRIBA · SIN ARQUEAR LUMBAR</text></svg>`,
+  press_maquina:`<svg viewBox="0 0 200 160" width="100%" height="140"><rect x="30" y="55" width="14" height="70" fill="#444" rx="3" transform="rotate(-15,37,90)"/><rect x="28" y="108" width="60" height="10" fill="#444" rx="3"/><line x1="110" y1="72" x2="150" y2="72" stroke="#444" stroke-width="4" stroke-linecap="round"/><line x1="110" y1="88" x2="150" y2="88" stroke="#444" stroke-width="4" stroke-linecap="round"/><rect x="40" y="72" width="18" height="38" fill="#D4956A" rx="4" transform="rotate(-10,49,91)"/><circle cx="54" cy="66" r="9" fill="#D4956A"/><g style="animation:pmi-press 2s ease-in-out infinite"><line x1="56" y1="83" x2="110" y2="76" stroke="#D4956A" stroke-width="5" stroke-linecap="round"/><line x1="56" y1="92" x2="110" y2="90" stroke="#D4956A" stroke-width="5" stroke-linecap="round"/><polygon points="112,76 120,80 112,84" fill="COL" opacity=".9"/></g><text x="100" y="155" text-anchor="middle" fill="#666" font-size="9" font-family="sans-serif">PECHO SUPERIOR · EMPUJE HORIZONTAL</text></svg>`,
+  crossover:`<svg viewBox="0 0 200 160" width="100%" height="140"><rect x="18" y="30" width="8" height="100" fill="#444" rx="2"/><rect x="174" y="30" width="8" height="100" fill="#444" rx="2"/><circle cx="22" cy="55" r="5" fill="COL" opacity=".6"/><circle cx="178" cy="55" r="5" fill="COL" opacity=".6"/><line x1="27" y1="55" x2="88" y2="88" stroke="COL" stroke-width="1.2" opacity=".4" style="animation:cx-arm-l 2s ease-in-out infinite;transform-origin:87px 90px"/><line x1="173" y1="55" x2="112" y2="88" stroke="COL" stroke-width="1.2" opacity=".4" style="animation:cx-arm-r 2s ease-in-out infinite;transform-origin:113px 90px"/><rect x="88" y="90" width="24" height="36" fill="#D4956A" rx="4"/><circle cx="100" cy="82" r="10" fill="#D4956A"/><g style="animation:cx-arm-l 2s ease-in-out infinite;transform-origin:87px 90px"><line x1="88" y1="92" x2="64" y2="76" stroke="#D4956A" stroke-width="5" stroke-linecap="round"/></g><g style="animation:cx-arm-r 2s ease-in-out infinite;transform-origin:113px 90px"><line x1="112" y1="92" x2="136" y2="76" stroke="#D4956A" stroke-width="5" stroke-linecap="round"/></g><polygon points="94,102 106,102 100,110" fill="COL" opacity=".7"/><text x="100" y="155" text-anchor="middle" fill="#666" font-size="9" font-family="sans-serif">BRAZOS EN ARCO · CIERRE AL CENTRO</text></svg>`,
+  rdl:`<svg viewBox="0 0 200 160" width="100%" height="140"><rect x="30" y="128" width="140" height="5" fill="#444" rx="2"/><rect x="28" y="122" width="14" height="16" fill="#555" rx="3"/><rect x="158" y="122" width="14" height="16" fill="#555" rx="3"/><g style="animation:rdl-hinge 2s ease-in-out infinite;transform-origin:100px 102px"><rect x="91" y="68" width="18" height="36" fill="#D4956A" rx="4"/><circle cx="100" cy="60" r="10" fill="#D4956A"/><line x1="91" y1="82" x2="74" y2="110" stroke="#D4956A" stroke-width="5" stroke-linecap="round"/><line x1="109" y1="82" x2="126" y2="110" stroke="#D4956A" stroke-width="5" stroke-linecap="round"/><line x1="96" y1="102" x2="90" y2="135" stroke="#D4956A" stroke-width="7" stroke-linecap="round"/><line x1="104" y1="102" x2="110" y2="135" stroke="#D4956A" stroke-width="7" stroke-linecap="round"/></g><path d="M105,68 Q130,55 128,90" stroke="COL" stroke-width="1.5" fill="none" stroke-dasharray="3,2"/><polygon points="128,92 122,86 134,85" fill="COL"/><text x="100" y="155" text-anchor="middle" fill="#666" font-size="9" font-family="sans-serif">BISAGRA DE CADERA · ESPALDA PLANA</text></svg>`,
+  bird_dog:`<svg viewBox="0 0 200 160" width="100%" height="140"><rect x="20" y="130" width="160" height="4" fill="#444" rx="1"/><rect x="72" y="100" width="56" height="14" fill="#D4956A" rx="5"/><circle cx="132" cy="102" r="9" fill="#D4956A"/><line x1="72" y1="110" x2="66" y2="130" stroke="#D4956A" stroke-width="6" stroke-linecap="round"/><line x1="108" y1="112" x2="118" y2="130" stroke="#D4956A" stroke-width="6" stroke-linecap="round"/><g style="animation:bd-arm 2s ease-in-out infinite"><line x1="128" y1="103" x2="148" y2="93" stroke="#D4956A" stroke-width="5" stroke-linecap="round"/><circle cx="150" cy="92" r="4" fill="COL" opacity=".7"/></g><g style="animation:bd-leg 2s ease-in-out infinite"><line x1="76" y1="110" x2="54" y2="118" stroke="#D4956A" stroke-width="7" stroke-linecap="round"/><ellipse cx="52" cy="118" rx="6" ry="4" fill="#D4956A"/></g><text x="100" y="155" text-anchor="middle" fill="#666" font-size="9" font-family="sans-serif">BRAZO Y PIERNA OPUESTOS · COLUMNA NEUTRA</text></svg>`,
+  superman:`<svg viewBox="0 0 200 160" width="100%" height="140"><rect x="20" y="122" width="160" height="4" fill="#444" rx="1"/><rect x="60" y="106" width="80" height="14" fill="#D4956A" rx="5"/><g style="animation:sup-lift 2.5s ease-in-out infinite"><circle cx="145" cy="106" r="9" fill="#D4956A"/><line x1="144" y1="100" x2="160" y2="90" stroke="#D4956A" stroke-width="5" stroke-linecap="round"/><line x1="134" y1="100" x2="118" y2="88" stroke="#D4956A" stroke-width="5" stroke-linecap="round"/><polygon points="96,100 104,100 100,92" fill="COL" opacity=".9"/></g><g style="animation:sup-lift 2.5s ease-in-out infinite;animation-delay:.1s"><line x1="68" y1="118" x2="52" y2="128" stroke="#D4956A" stroke-width="7" stroke-linecap="round"/><line x1="76" y1="118" x2="60" y2="130" stroke="#D4956A" stroke-width="7" stroke-linecap="round"/></g><text x="100" y="155" text-anchor="middle" fill="#666" font-size="9" font-family="sans-serif">CONTRAER ERECTORES · SOSTENER 2 SEG</text></svg>`,
+  plancha_frontal:`<svg viewBox="0 0 200 160" width="100%" height="140"><rect x="20" y="120" width="160" height="4" fill="#444" rx="1"/><rect x="46" y="105" width="110" height="14" fill="#D4956A" rx="5"/><circle cx="160" cy="108" r="9" fill="#D4956A"/><rect x="46" y="116" width="16" height="5" fill="#D4956A" rx="2"/><rect x="76" y="116" width="16" height="5" fill="#D4956A" rx="2"/><ellipse cx="38" cy="116" rx="8" ry="5" fill="#D4956A"/><rect x="86" y="105" width="40" height="14" fill="COL" rx="4" opacity=".15" style="animation:pf-breathe 3s ease-in-out infinite"/><text x="100" y="12" text-anchor="middle" fill="COL" font-size="8" font-family="sans-serif" style="animation:pf-breathe 3s ease-in-out infinite">● CORE ACTIVO</text><line x1="38" y1="108" x2="160" y2="108" stroke="COL" stroke-width="1" stroke-dasharray="4,3" opacity=".4"/><text x="100" y="155" text-anchor="middle" fill="#666" font-size="9" font-family="sans-serif">LÍNEA RECTA CABEZA-TALONES</text></svg>`,
+};
+
+let currentDay = 0;
+let openCard = null;
+let openGuide = null;
+
+function getSVG(key, color) {
+  return (SVG_DATA[key] || '').replace(/COL/g, color);
+}
+
+function buildDay(dayIdx) {
+  const d = DAYS[dayIdx];
+  const container = document.getElementById('day-' + dayIdx);
+  if (container.innerHTML !== '') return;
+
+  let html = '';
+  d.exercises.forEach((ex, i) => {
+    const cardId = `card-${dayIdx}-${i}`;
+    const detailId = `detail-${dayIdx}-${i}`;
+    const guideId = `guide-${dayIdx}-${i}`;
+    const borderId = `border-${dayIdx}-${i}`;
+
+    let badges = '';
+    if (ex.superset) badges += `<span class="badge-superset">SUPERSET</span>`;
+    if (ex.warning) badges += `<span class="badge-warning">⚠️ LUMBAR</span>`;
+    badges += `<span class="badge-tag" style="background:${d.color}18;color:${d.color};border:1px solid ${d.color}33">${ex.tag}</span>`;
+    if (ex.machine) badges += `<span class="badge-machine">⚙️ Máquina</span>`;
+
+    const kpDots = ex.kp.map((pt, pi) => {
+      const dotColor = pi === 0 ? d.color : pi === 1 ? d.color + '88' : '#333';
+      const textColor = pi === 0 ? '#ddd' : '#999';
+      return `<div class="kp-row"><div class="kp-dot" style="background:${dotColor}"></div><div class="kp-text" style="color:${textColor}">${pt}</div></div>`;
+    }).join('');
+
+    html += `
+    <div class="ex-card" id="${borderId}">
+      <div class="ex-row" onclick="toggleCard(${dayIdx},${i})">
+        <div style="flex:1">
+          <div class="ex-badges">${badges}</div>
+          <div class="ex-name">${ex.name}</div>
+        </div>
+        <div class="ex-right">
+          <div class="ex-sets" style="color:${d.color}">${ex.sets}</div>
+          <div class="ex-rest">descanso ${ex.rest}</div>
+        </div>
+      </div>
+      <div class="ex-detail" id="${detailId}" style="border-top:1px solid ${d.color}20">
+        <p class="ex-note">📝 ${ex.note}</p>
+        <button class="guide-btn" id="gbtn-${dayIdx}-${i}"
+          style="background:${d.color}22;color:${d.color};border:1px solid ${d.color}55"
+          onclick="toggleGuide(event,${dayIdx},${i})">▶ VER GUÍA VISUAL</button>
+      </div>
+      <div class="guide-panel" id="${guideId}" style="border-top:1px solid ${d.color}30">
+        <div class="guide-svg-wrap" style="background:linear-gradient(180deg,${d.color}08 0%,transparent 100%)">
+          <div class="guide-svg-lbl" style="color:${d.color}">ILUSTRACIÓN ANIMADA</div>
+          ${getSVG(ex.svg, d.color)}
+        </div>
+        <div class="guide-kp">
+          <div class="guide-kp-lbl" style="color:${d.color}">PUNTOS CLAVE</div>
+          ${kpDots}
+        </div>
+      </div>
+    </div>`;
+  });
+  container.innerHTML = html;
+}
+
+function toggleCard(dayIdx, exIdx) {
+  const detailId = `detail-${dayIdx}-${exIdx}`;
+  const guideId = `guide-${dayIdx}-${exIdx}`;
+  const borderId = `border-${dayIdx}-${exIdx}`;
+  const d = DAYS[dayIdx];
+
+  if (openCard && openCard !== `${dayIdx}-${exIdx}`) {
+    const [od, oi] = openCard.split('-');
+    document.getElementById(`detail-${od}-${oi}`).classList.remove('open');
+    document.getElementById(`guide-${od}-${oi}`).classList.remove('open');
+    document.getElementById(`border-${od}-${oi}`).style.borderColor = '';
+    resetGuideBtn(od, oi, DAYS[od].color);
+    openGuide = null;
+  }
+
+  const detail = document.getElementById(detailId);
+  const isOpen = detail.classList.contains('open');
+  detail.classList.toggle('open');
+  document.getElementById(borderId).style.borderColor = isOpen ? '' : d.color + '55';
+  if (isOpen) {
+    document.getElementById(guideId).classList.remove('open');
+    resetGuideBtn(dayIdx, exIdx, d.color);
+    openGuide = null;
+    openCard = null;
+  } else {
+    openCard = `${dayIdx}-${exIdx}`;
+  }
+}
+
+function toggleGuide(e, dayIdx, exIdx) {
+  e.stopPropagation();
+  const guideId = `guide-${dayIdx}-${exIdx}`;
+  const btn = document.getElementById(`gbtn-${dayIdx}-${exIdx}`);
+  const d = DAYS[dayIdx];
+  const guide = document.getElementById(guideId);
+  const isOpen = guide.classList.contains('open');
+  guide.classList.toggle('open');
+  if (isOpen) {
+    btn.style.background = d.color + '22';
+    btn.style.color = d.color;
+    btn.textContent = '▶ VER GUÍA VISUAL';
+    openGuide = null;
+  } else {
+    btn.style.background = d.color;
+    btn.style.color = '#000';
+    btn.textContent = '✕ CERRAR GUÍA';
+    openGuide = `${dayIdx}-${exIdx}`;
+  }
+}
+
+function resetGuideBtn(dayIdx, exIdx, color) {
+  const btn = document.getElementById(`gbtn-${dayIdx}-${exIdx}`);
+  if (btn) {
+    btn.style.background = color + '22';
+    btn.style.color = color;
+    btn.textContent = '▶ VER GUÍA VISUAL';
+  }
+}
+
+function switchDay(idx) {
+  const colors = ["#00E5FF","#76FF03","#FF6D00"];
+  // Close open cards
+  if (openCard) {
+    const [od, oi] = openCard.split('-');
+    const detail = document.getElementById(`detail-${od}-${oi}`);
+    if (detail) detail.classList.remove('open');
+    const guide = document.getElementById(`guide-${od}-${oi}`);
+    if (guide) guide.classList.remove('open');
+    const border = document.getElementById(`border-${od}-${oi}`);
+    if (border) border.style.borderColor = '';
+    openCard = null; openGuide = null;
+  }
+
+  // Update tabs
+  document.querySelectorAll('.day-btn').forEach((b,i) => {
+    b.classList.toggle('active', i === idx);
+    b.style.borderColor = i === idx ? colors[i] : 'transparent';
+    document.getElementById(`lbl-${i}`).style.color = i === idx ? colors[i] : '#f0f0f0';
+  });
+
+  // Update title color
+  document.getElementById('title-color').style.color = colors[idx];
+
+  // Update stats
+  const d = DAYS[idx];
+  const supersets = d.exercises.filter(e => e.superset).length;
+  document.getElementById('stats').innerHTML = `
+    <div class="stat-box"><div class="stat-val" style="color:${d.color}">${d.exercises.length}</div><div class="stat-lbl">EJERCICIOS</div></div>
+    <div class="stat-box"><div class="stat-val" style="color:${d.color}">~60</div><div class="stat-lbl">MINUTOS</div></div>
+    <div class="stat-box"><div class="stat-val" style="color:${d.color}">${supersets}</div><div class="stat-lbl">SUPERSETS</div></div>
+  `;
+
+  // Warmup
+  document.getElementById('warmup-bar').style.background = d.color + '12';
+  document.getElementById('warmup-bar').style.border = `1px solid ${d.color}30`;
+  document.getElementById('warmup-lbl').style.color = d.color;
+  document.getElementById('warmup-text').textContent = d.warmup;
+
+  // Tips accent
+  document.getElementById('tips-accent').style.background = d.color;
+
+  // Show day
+  document.querySelectorAll('.day-content').forEach((el,i) => el.classList.toggle('active', i === idx));
+  buildDay(idx);
+
+  currentDay = idx;
+}
+
+// Build tips
+const tipsList = document.getElementById('tips-list');
+TIPS.forEach(t => {
+  const el = document.createElement('div');
+  el.className = 'tip-card';
+  el.innerHTML = `<span style="font-size:16px;flex-shrink:0">${t.icon}</span><span>${t.text}</span>`;
+  tipsList.appendChild(el);
+});
+
+// Init
+switchDay(0);
+</script>
+</body>
+</html>
